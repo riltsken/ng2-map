@@ -17,6 +17,7 @@ export declare class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewI
     el: HTMLElement;
     map: google.maps.Map;
     mapOptions: google.maps.MapOptions;
+    apiUrl: string;
     backgroundColor: any;
     center: any;
     disableDefaultUI: any;
