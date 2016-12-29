@@ -53,6 +53,26 @@ export class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
   public map: google.maps.Map;
   public mapOptions: google.maps.MapOptions = {};
 
+  bounds_changed: any;
+  center_changed: any;
+  click: any;
+  dblclick: any;
+  drag: any;
+  dragend: any;
+  dragstart: any;
+  heading_changed: any;
+  idle: any;
+  typeid_changed: any;
+  mousemove: any;
+  mouseout: any;
+  mouseover: any;
+  projection_changed: any;
+  resize: any;
+  rightclick: any;
+  tilesloaded: any;
+  tile_changed: any;
+  zoom_changed: any;
+
   public inputChanges$ = new Subject();
   public mapReady$: EventEmitter<any> = new EventEmitter();
 
