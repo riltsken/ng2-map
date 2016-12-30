@@ -24,7 +24,7 @@ export class OptionBuilder {
     } else { // if options not given, process all user inputs
       definedInputs.forEach(input => {
         if (userInputs[input] !== undefined)  {
-          options[input] = this.googlize(userInputs[input], {key: input});
+          (<any>options)[input] = this.googlize(userInputs[input], {key: input});
         }
       });
     }
