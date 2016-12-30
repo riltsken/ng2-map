@@ -18,20 +18,73 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 import { IJson, toCamelCase } from '../services/util';
 
-const INPUTS = [
-  'backgroundColor', 'center', 'disableDefaultUI', 'disableDoubleClickZoom', 'draggable', 'draggableCursor',
-  'draggingCursor', 'heading', 'keyboardShortcuts', 'mapMaker', 'mapTypeControl', 'mapTypeId', 'maxZoom', 'minZoom',
-  'noClear', 'overviewMapControl', 'panControl', 'panControlOptions', 'rotateControl', 'scaleControl', 'scrollwheel',
-  'streetView', 'styles', 'tilt', 'zoom', 'streetViewControl', 'zoomControl', 'mapTypeControlOptions',
-  'overviewMapControlOptions', 'rotateControlOptions', 'scaleControlOptions', 'streetViewControlOptions',
-  'options'
-];
+function applyMixins(derivedCtor: any, baseCtors: any[]) {
+    baseCtors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+            derivedCtor.prototype[name] = baseCtor.prototype[name];
+        });
+    });
+}
 
-const OUTPUTS = [
-  'bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'heading_changed', 'idle',
-  'typeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick',
-  'tilesloaded', 'tile_changed', 'zoom_changed'
-];
+class EventInputs {
+    public backgroundColor: any;
+    public center: any;
+    public disableDefaultUI: any;
+    public disableDoubleClickZoom: any;
+    public draggable: any;
+    public draggableCursor: any;
+    public draggingCursor: any;
+    public heading: any;
+    public keyboardShortcuts: any;
+    public mapMaker: any;
+    public mapTypeControl: any;
+    public mapTypeId: any;
+    public maxZoom: any;
+    public minZoom: any;
+    public noClear: any;
+    public overviewMapControl: any;
+    public panControl: any;
+    public panControlOptions: any;
+    public rotateControl: any;
+    public scaleControl: any;
+    public scrollwheel: any;
+    public streetView: any;
+    public styles: any;
+    public tilt: any;
+    public zoom: any;
+    public streetViewControl: any;
+    public zoomControl: any;
+    public mapTypeControlOptions: any;
+    public overviewMapControlOptions: any;
+    public rotateControlOptions: any;
+    public scaleControlOptions: any;
+    public streetViewControlOptions: any;
+    public options: any;
+}
+
+class EventOutputs {
+    public bounds_changed: any;
+    public center_changed: any;
+    public click: any;
+    public dblclick: any;
+    public drag: any;
+    public dragend: any;
+    public dragstart: any;
+    public heading_changed: any;
+    public idle: any;
+    public typeid_changed: any;
+    public mousemove: any;
+    public mouseout: any;
+    public mouseover: any;
+    public projection_changed: any;
+    public resize: any;
+    public rightclick: any;
+    public tilesloaded: any;
+    public tile_changed: any;
+    public zoom_changed: any;
+}
+
+interface Ng2MapComponent extends EventInputs, EventOutputs {}
 
 @Component({
   selector: 'ng2-map',
@@ -40,15 +93,15 @@ const OUTPUTS = [
     ng2-map {display: block; height: 300px;}
     .google-map {width: 100%; height: 100%}
   `],
-  inputs: INPUTS,
-  outputs: OUTPUTS,
+  inputs: Object.keys(EventInputs),
+  outputs: Object.keys(EventOutputs),
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="google-map"></div>
     <ng-content></ng-content>
   `,
 })
-export class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
+class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
   public el: HTMLElement;
   public map: google.maps.Map;
   public mapOptions: google.maps.MapOptions = {};
@@ -80,7 +133,7 @@ export class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
 
     // all outputs needs to be initialized,
     // http://stackoverflow.com/questions/37765519/angular2-directive-cannot-read-property-subscribe-of-undefined-with-outputs
-    OUTPUTS.forEach(output => (<any>this)[output] = new EventEmitter());
+    Object.keys(EventOutputs).forEach(output => this[output] = new EventEmitter());
   }
 
   ngAfterViewInit(): void {
@@ -112,7 +165,7 @@ export class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   initializeMap(): void {
     this.el = this.elementRef.nativeElement.querySelector('.google-map');
-    this.mapOptions = this.optionBuilder.googlizeAllInputs(INPUTS, this);
+    this.mapOptions = this.optionBuilder.googlizeAllInputs(Object.keys(EventInputs), this);
     console.log('ng2-map mapOptions', this.mapOptions);
 
     this.mapOptions.zoom = this.mapOptions.zoom || 15;
@@ -126,7 +179,7 @@ export class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
     }
 
     // set google events listeners and emits to this outputs listeners
-    this.ng2Map.setObjectEvents(OUTPUTS, this, 'map');
+    this.ng2Map.setObjectEvents(Object.keys(EventOutputs), this, 'map');
 
     this.map.addListener('idle', () => {
       if (!this.mapIdledOnce) {
@@ -166,7 +219,7 @@ export class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     if (this.el) {
-      OUTPUTS.forEach(output => google.maps.event.clearListeners(this.map, output));
+      Object.keys(EventOutputs).forEach(output => google.maps.event.clearListeners(this.map, output));
     }
   }
 
@@ -184,3 +237,5 @@ export class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
     (index > -1) && this.map[groupName].splice(index, 1);
   }
 }
+
+export { EventInputs, EventOutputs, Ng2MapComponent };

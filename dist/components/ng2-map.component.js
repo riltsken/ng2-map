@@ -7,19 +7,25 @@ var ng2_map_1 = require('../services/ng2-map');
 var Subject_1 = require('rxjs/Subject');
 require('rxjs/add/operator/debounceTime');
 var util_1 = require('../services/util');
-var INPUTS = [
-    'backgroundColor', 'center', 'disableDefaultUI', 'disableDoubleClickZoom', 'draggable', 'draggableCursor',
-    'draggingCursor', 'heading', 'keyboardShortcuts', 'mapMaker', 'mapTypeControl', 'mapTypeId', 'maxZoom', 'minZoom',
-    'noClear', 'overviewMapControl', 'panControl', 'panControlOptions', 'rotateControl', 'scaleControl', 'scrollwheel',
-    'streetView', 'styles', 'tilt', 'zoom', 'streetViewControl', 'zoomControl', 'mapTypeControlOptions',
-    'overviewMapControlOptions', 'rotateControlOptions', 'scaleControlOptions', 'streetViewControlOptions',
-    'options'
-];
-var OUTPUTS = [
-    'bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'heading_changed', 'idle',
-    'typeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick',
-    'tilesloaded', 'tile_changed', 'zoom_changed'
-];
+function applyMixins(derivedCtor, baseCtors) {
+    baseCtors.forEach(function (baseCtor) {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(function (name) {
+            derivedCtor.prototype[name] = baseCtor.prototype[name];
+        });
+    });
+}
+var EventInputs = (function () {
+    function EventInputs() {
+    }
+    return EventInputs;
+}());
+exports.EventInputs = EventInputs;
+var EventOutputs = (function () {
+    function EventOutputs() {
+    }
+    return EventOutputs;
+}());
+exports.EventOutputs = EventOutputs;
 var Ng2MapComponent = (function () {
     function Ng2MapComponent(optionBuilder, elementRef, zone, geolocation, geoCoder, ng2Map) {
         var _this = this;
@@ -42,7 +48,7 @@ var Ng2MapComponent = (function () {
         }
         // all outputs needs to be initialized,
         // http://stackoverflow.com/questions/37765519/angular2-directive-cannot-read-property-subscribe-of-undefined-with-outputs
-        OUTPUTS.forEach(function (output) { return _this[output] = new core_1.EventEmitter(); });
+        Object.keys(EventOutputs).forEach(function (output) { return _this[output] = new core_1.EventEmitter(); });
     }
     Ng2MapComponent.prototype.ngAfterViewInit = function () {
         if (this.mapInitPath !== 1) {
@@ -71,7 +77,7 @@ var Ng2MapComponent = (function () {
     Ng2MapComponent.prototype.initializeMap = function () {
         var _this = this;
         this.el = this.elementRef.nativeElement.querySelector('.google-map');
-        this.mapOptions = this.optionBuilder.googlizeAllInputs(INPUTS, this);
+        this.mapOptions = this.optionBuilder.googlizeAllInputs(Object.keys(EventInputs), this);
         console.log('ng2-map mapOptions', this.mapOptions);
         this.mapOptions.zoom = this.mapOptions.zoom || 15;
         typeof this.mapOptions.center === 'string' && (delete this.mapOptions.center);
@@ -81,7 +87,7 @@ var Ng2MapComponent = (function () {
             this.setCenter();
         }
         // set google events listeners and emits to this outputs listeners
-        this.ng2Map.setObjectEvents(OUTPUTS, this, 'map');
+        this.ng2Map.setObjectEvents(Object.keys(EventOutputs), this, 'map');
         this.map.addListener('idle', function () {
             if (!_this.mapIdledOnce) {
                 _this.mapReady$.emit(_this.map);
@@ -117,7 +123,7 @@ var Ng2MapComponent = (function () {
     Ng2MapComponent.prototype.ngOnDestroy = function () {
         var _this = this;
         if (this.el) {
-            OUTPUTS.forEach(function (output) { return google.maps.event.clearListeners(_this.map, output); });
+            Object.keys(EventOutputs).forEach(function (output) { return google.maps.event.clearListeners(_this.map, output); });
         }
     };
     //map.markers, map.circles, map.heatmapLayers.. etc
@@ -137,8 +143,8 @@ var Ng2MapComponent = (function () {
                     selector: 'ng2-map',
                     providers: [ng2_map_1.Ng2Map, option_builder_1.OptionBuilder, geo_coder_1.GeoCoder, navigator_geolocation_1.NavigatorGeolocation],
                     styles: ["\n    ng2-map {display: block; height: 300px;}\n    .google-map {width: 100%; height: 100%}\n  "],
-                    inputs: INPUTS,
-                    outputs: OUTPUTS,
+                    inputs: Object.keys(EventInputs),
+                    outputs: Object.keys(EventOutputs),
                     encapsulation: core_1.ViewEncapsulation.None,
                     template: "\n    <div class=\"google-map\"></div>\n    <ng-content></ng-content>\n  ",
                 },] },

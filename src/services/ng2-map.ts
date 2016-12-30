@@ -21,7 +21,7 @@ export class Ng2Map {
       thisObj[prefix].addListener(eventName, function(event: google.maps.event) {
         let param: any = event ? event : {};
         param.target = this;
-        (<any>thisObj)[definedEvent].emit(param);
+        thisObj[definedEvent].emit(param);
       });
     });
   }
