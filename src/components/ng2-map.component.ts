@@ -18,15 +18,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 import { IJson, toCamelCase } from '../services/util';
 
-function applyMixins(derivedCtor: any, baseCtors: any[]) {
-    baseCtors.forEach(baseCtor => {
-        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-            derivedCtor.prototype[name] = baseCtor.prototype[name];
-        });
-    });
-}
-
-class EventInputs {
+export class EventInputs {
     public backgroundColor: any;
     public center: any;
     public disableDefaultUI: any;
@@ -62,7 +54,7 @@ class EventInputs {
     public options: any;
 }
 
-class EventOutputs {
+export class EventOutputs {
     public bounds_changed: any;
     public center_changed: any;
     public click: any;
@@ -84,7 +76,7 @@ class EventOutputs {
     public zoom_changed: any;
 }
 
-interface Ng2MapComponent extends EventInputs, EventOutputs {}
+export interface Ng2MapComponent extends EventInputs, EventOutputs {}
 
 @Component({
   selector: 'ng2-map',
@@ -101,7 +93,7 @@ interface Ng2MapComponent extends EventInputs, EventOutputs {}
     <ng-content></ng-content>
   `,
 })
-class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
+export class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
   public el: HTMLElement;
   public map: google.maps.Map;
   public mapOptions: google.maps.MapOptions = {};
@@ -237,5 +229,3 @@ class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
     (index > -1) && this.map[groupName].splice(index, 1);
   }
 }
-
-export { EventInputs, EventOutputs, Ng2MapComponent };

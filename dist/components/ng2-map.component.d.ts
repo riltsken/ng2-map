@@ -7,7 +7,7 @@ import { Ng2Map } from '../services/ng2-map';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 import { IJson } from '../services/util';
-declare class EventInputs {
+export declare class EventInputs {
     backgroundColor: any;
     center: any;
     disableDefaultUI: any;
@@ -42,7 +42,7 @@ declare class EventInputs {
     streetViewControlOptions: any;
     options: any;
 }
-declare class EventOutputs {
+export declare class EventOutputs {
     bounds_changed: any;
     center_changed: any;
     click: any;
@@ -63,9 +63,9 @@ declare class EventOutputs {
     tile_changed: any;
     zoom_changed: any;
 }
-interface Ng2MapComponent extends EventInputs, EventOutputs {
+export interface Ng2MapComponent extends EventInputs, EventOutputs {
 }
-declare class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
+export declare class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
     optionBuilder: OptionBuilder;
     elementRef: ElementRef;
     zone: NgZone;
@@ -91,4 +91,3 @@ declare class Ng2MapComponent implements OnChanges, OnDestroy, AfterViewInit {
     addToMapObjectGroup(mapObjectName: string, mapObject: any): void;
     removeFromMapObjectGroup(mapObjectName: string, mapObject: any): void;
 }
-export { EventInputs, EventOutputs, Ng2MapComponent };

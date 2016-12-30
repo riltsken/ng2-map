@@ -7,13 +7,6 @@ var ng2_map_1 = require('../services/ng2-map');
 var Subject_1 = require('rxjs/Subject');
 require('rxjs/add/operator/debounceTime');
 var util_1 = require('../services/util');
-function applyMixins(derivedCtor, baseCtors) {
-    baseCtors.forEach(function (baseCtor) {
-        Object.getOwnPropertyNames(baseCtor.prototype).forEach(function (name) {
-            derivedCtor.prototype[name] = baseCtor.prototype[name];
-        });
-    });
-}
 var EventInputs = (function () {
     function EventInputs() {
     }

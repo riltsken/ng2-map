@@ -242,13 +242,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Subject_1 = __webpack_require__(8);
 	__webpack_require__(11);
 	var util_1 = __webpack_require__(6);
-	function applyMixins(derivedCtor, baseCtors) {
-	    baseCtors.forEach(function (baseCtor) {
-	        Object.getOwnPropertyNames(baseCtor.prototype).forEach(function (name) {
-	            derivedCtor.prototype[name] = baseCtor.prototype[name];
-	        });
-	    });
-	}
 	var EventInputs = (function () {
 	    function EventInputs() {
 	    }
